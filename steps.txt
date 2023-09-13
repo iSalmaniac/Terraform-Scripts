@@ -1,0 +1,83 @@
+ssh-keygen
+
+#############Install Kubectl
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+kubectl version --client
+
+#########################Install Eksctl
+ARCH=amd64
+PLATFORM=$(uname -s)_$ARCH
+curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_$PLATFORM.tar.gz" 
+tar -xzf eksctl_$PLATFORM.tar.gz -C /tmp && rm eksctl_$PLATFORM.tar.gz 
+sudo mv /tmp/eksctl /usr/local/bin
+eksctl version
+
+######################################################### install awscli
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+
+###################### install aws-iam-authenticator
+curl -Lo aws-iam-authenticator https://github.com/kubernetes-sigs/aws-iam-authenticator/releases/download/v0.5.9/aws-iam-authenticator_0.5.9_linux_amd64
+chmod +x ./aws-iam-authenticator
+mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && export PATH=$HOME/bin:$PATH
+mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && export PATH=$HOME/bin:$PATH
+aws-iam-authenticator help
+
+
+
+1. ###########################
+aws configure 
+Access Key
+AKIAV2RLWJUKPT3A5PMF
+xT18NdMbQ2CrRtI/391LDboitDK14sDLlpCp23YY
+
+2. ############################### 
+export AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id)
+export AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key)
+
+3.  ###############################  Create Cluster for manual
+ 
+>Make a shell script of below{chmod +x name.sh / ./name.sh} or yaml script and execute {eksctl create cluster -f name.yaml}
+
+eksctl create cluster \
+  --name vprofile-eks-cluster \
+  --version 1.27 \
+  --region ap-south-1 \
+  --nodegroup-name Linux-nodes \
+  --node-type t2.micro \
+  --nodes-min 1 \
+  --nodes-max 3 \
+  --node-volume-size 8 \
+  --node-private-networking \
+  --ssh-access
+   
+vol-042ac62633bf9d397
+
+
+
+aws eks update-kubeconfig --region ap-south-1 --name terraformEKScluster
+
+10. ################################ to look at all the system
+kubectl -n kube-system get po
+
+12.################Install Helm On EKS VM 
+cd /tmp/
+wget https://get.helm.sh/helm-v3.12.3-linux-amd64.tar.gz
+tar xzvf helm-v3.12.3-linux-amd64.tar.gz
+cd linux-amd64/
+sudo mv helm /usr/local/bin/helm
+
+or
+
+curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
+sudo apt-get install apt-transport-https --yes
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+sudo apt-get update
+sudo apt-get install helm
+
+
+
+11. ########################### Delete Cluster
+eksctl delete cluster --name <name of cluster>
