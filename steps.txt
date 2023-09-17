@@ -50,9 +50,10 @@ eksctl create cluster \
   --node-private-networking \
   --ssh-access
    
-vol-042ac62633bf9d397
 
 
+
+################UPDATE KUBE CONFIG FILE 
 
 aws eks update-kubeconfig --region ap-south-1 --name terraformEKScluster
 
@@ -60,13 +61,6 @@ aws eks update-kubeconfig --region ap-south-1 --name terraformEKScluster
 kubectl -n kube-system get po
 
 12.################Install Helm On EKS VM 
-cd /tmp/
-wget https://get.helm.sh/helm-v3.12.3-linux-amd64.tar.gz
-tar xzvf helm-v3.12.3-linux-amd64.tar.gz
-cd linux-amd64/
-sudo mv helm /usr/local/bin/helm
-
-or
 
 curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
 sudo apt-get install apt-transport-https --yes
@@ -75,6 +69,8 @@ sudo apt-get update
 sudo apt-get install helm
 
 
+##########
+terraform destroy
 
 11. ########################### Delete Cluster
 eksctl delete cluster --name <name of cluster>
