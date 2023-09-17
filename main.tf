@@ -64,10 +64,7 @@ resource "aws_eks_cluster" "eks_cluster" {
 # Configure subnets below
    subnet_ids         = ["subnet-0afd7134f3fdc1da6","subnet-004b0f1f4cd1927db","subnet-05d9a70e9d7258dde"] 
     }
-  depends_on = [
-    "aws_iam_role_policy_attachment.eks-cluster-AmazonEKSClusterPolicy",
-    "aws_iam_role_policy_attachment.eks-cluster-AmazonEKSServicePolicy",
-   ]
+  
 }
  
 # Creating IAM role for AWS EKS nodes with assume policy so that it can assume 
